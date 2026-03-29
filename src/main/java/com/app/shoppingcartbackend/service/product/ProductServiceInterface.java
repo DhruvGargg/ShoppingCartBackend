@@ -1,14 +1,16 @@
 package com.app.shoppingcartbackend.service.product;
 
 import com.app.shoppingcartbackend.model.Product;
+import com.app.shoppingcartbackend.request.AddProductRequest;
+import com.app.shoppingcartbackend.request.ProductUpdateRequest;
 
 import java.util.List;
 
 public interface ProductServiceInterface {
-    Product addProduct(Product product);
+    Product addProduct(AddProductRequest product);
     Product getProductById(Long id);
     void deleteProductById(Long id);
-    void updateProduct(Product product, Long productId);
+    Product updateProduct(ProductUpdateRequest product, Long productId);
 
     List<Product> getAllProducts();
     List<Product> getProductsByCategory(String category);
