@@ -5,10 +5,12 @@ import com.app.shoppingcartbackend.model.Product;
 import com.app.shoppingcartbackend.request.AddProductRequest;
 import com.app.shoppingcartbackend.request.ProductUpdateRequest;
 import com.app.shoppingcartbackend.response.APIResponse;
+import com.app.shoppingcartbackend.service.product.ProductService;
 import com.app.shoppingcartbackend.service.product.ProductServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.support.ResourceTransactionManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +18,14 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/products")
 public class ProductController {
     private final ProductServiceInterface productService;
+
+    ProductController(ProductServiceInterface productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/all")
     public ResponseEntity<APIResponse> getAllProducts() {
@@ -151,21 +156,13 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/by-brand-and-name")
-    public ResponseEntity<APIResponse> getProductsByBrandAndName(@RequestParam String brand, @RequestParam String name) {
+    @GetMapping("/count-by-brand-and-name")
+    public ResponseEntity<APIResponse> countProductsByBrandAndName(@RequestParam String brand, @RequestParam String name) {
         try {
-            List<Product> products = productService.getProductsByBrandAndName(brand, name);
-            if(products.isEmpty()) {
-                return ResponseEntity.status(NOT_FOUND).body(new APIResponse("No products found", products));
-            }
-            return ResponseEntity.ok(new APIResponse("success", products));
+            var count = productService.countProductsByBrandAndName(brand, name);
+            return ResponseEntity.ok(new APIResponse("success", count));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new APIResponse(e.getMessage(), null));
+            return ResponseEntity.ok(new APIResponse(e.getMessage(), null));
         }
-    }
-
-    public ResponseEntity<Long> countProductsByBrandAndName(@RequestParam String brand, @RequestParam String name) {
-        Long count = productService.countProductsByBrandAndName(brand, name);
-        return ResponseEntity.ok(count);
     }
 }
