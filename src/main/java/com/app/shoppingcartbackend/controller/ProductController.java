@@ -5,12 +5,8 @@ import com.app.shoppingcartbackend.model.Product;
 import com.app.shoppingcartbackend.request.AddProductRequest;
 import com.app.shoppingcartbackend.request.ProductUpdateRequest;
 import com.app.shoppingcartbackend.response.APIResponse;
-import com.app.shoppingcartbackend.service.product.ProductService;
 import com.app.shoppingcartbackend.service.product.ProductServiceInterface;
-import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.support.ResourceTransactionManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

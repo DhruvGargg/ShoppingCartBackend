@@ -4,13 +4,10 @@ import com.app.shoppingcartbackend.exception.AlreadyExistsException.AlreadyExist
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Category;
 import com.app.shoppingcartbackend.response.APIResponse;
-import com.app.shoppingcartbackend.service.category.CategoryService;
 import com.app.shoppingcartbackend.service.category.CategoryServiceInterface;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.support.ReactivePageableExecutionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 
