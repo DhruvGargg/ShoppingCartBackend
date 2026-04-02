@@ -1,4 +1,4 @@
-package com.app.shoppingcartbackend.repository.CategoryRepository;
+package com.app.shoppingcartbackend.repository.category;
 
 import com.app.shoppingcartbackend.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

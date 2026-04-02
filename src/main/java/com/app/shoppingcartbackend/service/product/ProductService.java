@@ -1,13 +1,18 @@
 package com.app.shoppingcartbackend.service.product;
 
+import com.app.shoppingcartbackend.dto.ImageDTO;
+import com.app.shoppingcartbackend.dto.ProductDTO;
 import com.app.shoppingcartbackend.exception.ProductNotFound.ProductNotFoundException;
 import com.app.shoppingcartbackend.model.Category;
+import com.app.shoppingcartbackend.model.Image;
 import com.app.shoppingcartbackend.model.Product;
-import com.app.shoppingcartbackend.repository.CategoryRepository.CategoryRepository;
-import com.app.shoppingcartbackend.repository.ProductRepository.ProductRepository;
+import com.app.shoppingcartbackend.repository.category.CategoryRepository;
+import com.app.shoppingcartbackend.repository.image.ImageRepository;
+import com.app.shoppingcartbackend.repository.product.ProductRepository;
 import com.app.shoppingcartbackend.request.AddProductRequest;
 import com.app.shoppingcartbackend.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +24,8 @@ public class ProductService implements ProductServiceInterface {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -107,5 +114,19 @@ public class ProductService implements ProductServiceInterface {
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand, name);
+    }
+
+    @Override
+    public ProductDTO convertToProductDTO(Product product) {
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDTO> imageDTOS = images.stream().map(image -> modelMapper.map(image, ImageDTO.class)).toList();
+        productDTO.setImages(imageDTOS);
+        return productDTO;
+    }
+
+    @Override
+    public List<ProductDTO> getConvertedProducts(List<Product> products) {
+        return products.stream().map(this::convertToProductDTO).toList();
     }
 }

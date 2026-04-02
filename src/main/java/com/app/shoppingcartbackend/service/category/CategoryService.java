@@ -3,7 +3,7 @@ package com.app.shoppingcartbackend.service.category;
 import com.app.shoppingcartbackend.exception.AlreadyExistsException.AlreadyExistsException;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Category;
-import com.app.shoppingcartbackend.repository.CategoryRepository.CategoryRepository;
+import com.app.shoppingcartbackend.repository.category.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.app.shoppingcartbackend.controller;
 
+import com.app.shoppingcartbackend.dto.ProductDTO;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Product;
 import com.app.shoppingcartbackend.request.AddProductRequest;
@@ -8,7 +9,7 @@ import com.app.shoppingcartbackend.response.APIResponse;
 import com.app.shoppingcartbackend.service.product.ProductServiceInterface;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+ 
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -27,7 +28,8 @@ public class ProductController {
     public ResponseEntity<APIResponse> getAllProducts() {
         try {
             List<Product> products = productService.getAllProducts();
-            return ResponseEntity.ok(new APIResponse("success", products));
+            List<ProductDTO> convertedProducts = productService.getConvertedProducts(products);
+            return ResponseEntity.ok(new APIResponse("success", convertedProducts));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new APIResponse(e.getMessage(), null));
         }
@@ -37,7 +39,8 @@ public class ProductController {
     public ResponseEntity<APIResponse> getProductById(@PathVariable Long id) {
         try {
             Product product = productService.getProductById(id);
-            return ResponseEntity.ok(new APIResponse("success", product));
+            ProductDTO convertedProduct = productService.convertToProductDTO(product);
+            return ResponseEntity.ok(new APIResponse("success", convertedProduct));
         } catch (ResourceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -78,9 +81,10 @@ public class ProductController {
         try {
             List<Product> products = productService.getProductsByBrandAndName(brand, name);
             if(products.isEmpty()) {
-                return ResponseEntity.status(NOT_FOUND).body(new APIResponse("No products found", products));
+                return ResponseEntity.status(NOT_FOUND).body(new APIResponse("No products found", null));
             }
-            return ResponseEntity.ok(new APIResponse("success", products));
+            List<ProductDTO> convertedProducts = productService.getConvertedProducts(products);
+            return ResponseEntity.ok(new APIResponse("success", convertedProducts));
         }
         catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new APIResponse(e.getMessage(), null));

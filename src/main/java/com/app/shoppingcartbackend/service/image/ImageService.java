@@ -4,10 +4,8 @@ import com.app.shoppingcartbackend.dto.ImageDTO;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Image;
 import com.app.shoppingcartbackend.model.Product;
-import com.app.shoppingcartbackend.repository.ImageRepository.ImageRepository;
+import com.app.shoppingcartbackend.repository.image.ImageRepository;
 import com.app.shoppingcartbackend.service.product.ProductService;
-import com.app.shoppingcartbackend.service.product.ProductServiceInterface;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,8 +59,8 @@ public class ImageService implements ImageServiceInterface {
                 imageRepository.save(savedImage);
                 ImageDTO imageDTO = new ImageDTO();
                 imageDTO.setDownloadUrl(savedImage.getDownloadUrl());
-                imageDTO.setImageName(savedImage.getFileName());
-                imageDTO.setImageId(savedImage.getId());
+                imageDTO.setFileName(savedImage.getFileName());
+                imageDTO.setId(savedImage.getId());
                 savedImageDTO.add(imageDTO);
             }
             catch (IOException | SQLException e) {
