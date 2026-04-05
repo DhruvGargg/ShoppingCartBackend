@@ -1,4 +1,4 @@
-package com.app.shoppingcartbackend.repository.CartItemRepository;
+package com.app.shoppingcartbackend.repository.cartitem;
 
 import com.app.shoppingcartbackend.model.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
