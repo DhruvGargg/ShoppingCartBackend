@@ -25,6 +25,24 @@ public class Cart {
     private Set<CartItem> cartItems;
 
     public void addItem(CartItem cartItem) {
+        this.cartItems.add(cartItem);
+        cartItem.setCart(this);
+        updateTotalAmount();
+    }
 
+    private void updateTotalAmount() {
+        this.totalAmount = (BigDecimal) cartItems.stream().map(item -> {
+           BigDecimal unitPrice = item.getUnitPrice();
+           if(unitPrice == null) {
+               return BigDecimal.ZERO;
+           }
+            return null;
+        });
+    }
+
+    public void removeItem(CartItem itemToRemove) {
+        this.cartItems.remove(itemToRemove);
+        itemToRemove.setCart(null);
+        updateTotalAmount();
     }
 }
