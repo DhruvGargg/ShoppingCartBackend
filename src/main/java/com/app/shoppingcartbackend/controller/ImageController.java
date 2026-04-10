@@ -61,7 +61,7 @@ public class ImageController {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new APIResponse("Image update failed!", INTERNAL_SERVER_ERROR));
     }
 
-    @DeleteMapping("/{imageId}/delete")
+    @DeleteMapping("/delete/{imageId}")
     public ResponseEntity<APIResponse> deleteImage(@PathVariable Long imageId) {
         try {
             Image image = imageService.getImageById(imageId);
