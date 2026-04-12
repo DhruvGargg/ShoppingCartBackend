@@ -1,5 +1,6 @@
 package com.app.shoppingcartbackend.controller;
 
+import com.app.shoppingcartbackend.exception.ProductNotFound.ProductNotFoundException;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.response.APIResponse;
 import com.app.shoppingcartbackend.service.cart.CartItemServiceInterface;
@@ -22,7 +23,7 @@ public class CartItemController {
                                                      @RequestParam Long productId,
                                                      @RequestParam Integer quantity) {
         try {
-            if(cartId == null) {
+            if (cartId == null) {
                 cartId = cartService.initializeNewCart();
             }
             cartItemService.addItemToCart(cartId, productId, quantity);

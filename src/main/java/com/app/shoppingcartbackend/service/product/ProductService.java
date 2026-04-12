@@ -51,7 +51,8 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
 
     @Override

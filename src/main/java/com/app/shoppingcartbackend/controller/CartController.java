@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/carts")
+@RequestMapping("${api.prefix}/cart")
 public class CartController {
     private final CartServiceInterface cartService;
 

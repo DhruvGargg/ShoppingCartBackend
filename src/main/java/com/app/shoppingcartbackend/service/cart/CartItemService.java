@@ -9,11 +9,13 @@ import com.app.shoppingcartbackend.repository.cartitem.CartItemRepository;
 import com.app.shoppingcartbackend.service.product.ProductServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CartItemService implements CartItemServiceInterface {
 
     private final CartItemRepository cartItemRepository;
@@ -23,6 +25,9 @@ public class CartItemService implements CartItemServiceInterface {
 
     @Override
     public void addItemToCart(Long cartId, Long productId, Integer quantity) {
+        if(cartId == null) {
+            cartId = cartService.initializeNewCart();
+        }
         Cart cart = cartService.getCart(cartId);
         Product product = productService.getProductById(productId);
         CartItem cartItem = cart.getCartItems()
@@ -46,9 +51,9 @@ public class CartItemService implements CartItemServiceInterface {
     }
 
     @Override
-    public void removeItemFromCart(Long cartId, Long productId) {
+    public void removeItemFromCart(Long cartId, Long itemId) {
         Cart cart = cartService.getCart(cartId);
-        CartItem itemToRemove = getCartItem(cartId, productId);
+        CartItem itemToRemove = getCartItem(cartId, itemId);
         cart.removeItem(itemToRemove);
         cartRepository.save(cart);
     }
@@ -71,11 +76,11 @@ public class CartItemService implements CartItemServiceInterface {
     }
 
     @Override
-    public CartItem getCartItem(Long cartId, Long productId) {
+    public CartItem getCartItem(Long cartId, Long itemId) {
         Cart cart = cartService.getCart(cartId);
         return cart.getCartItems()
                 .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
+                .filter(item -> item.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
     }
