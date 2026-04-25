@@ -25,14 +25,11 @@ public class CartItemService implements CartItemServiceInterface {
 
     @Override
     public void addItemToCart(Long cartId, Long productId, Integer quantity) {
-        if(cartId == null) {
-            cartId = cartService.initializeNewCart();
-        }
         Cart cart = cartService.getCart(cartId);
         Product product = productService.getProductById(productId);
         CartItem cartItem = cart.getCartItems()
                 .stream()
-                .filter(item -> item.getProduct().equals(product))
+                .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst().orElse(new CartItem());
         if(cartItem.getId() == null) {
             cartItem.setProduct(product);
@@ -47,7 +44,6 @@ public class CartItemService implements CartItemServiceInterface {
         cart.addItem(cartItem);
         cartItemRepository.save(cartItem);
         cartRepository.save(cart);
-
     }
 
     @Override
@@ -70,7 +66,10 @@ public class CartItemService implements CartItemServiceInterface {
                     item.setTotalPrice();
                     item.setUnitPrice(item.getProduct().getPrice());
                 });
-        BigDecimal totalAmount = cart.getTotalAmount();
+        BigDecimal totalAmount = cart.getCartItems()
+                .stream()
+                .map(CartItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         cart.setTotalAmount(totalAmount);
         cartRepository.save(cart);
     }

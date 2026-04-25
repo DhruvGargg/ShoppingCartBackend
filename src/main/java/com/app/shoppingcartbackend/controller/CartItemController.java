@@ -1,6 +1,5 @@
 package com.app.shoppingcartbackend.controller;
 
-import com.app.shoppingcartbackend.exception.ProductNotFound.ProductNotFoundException;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.response.APIResponse;
 import com.app.shoppingcartbackend.service.cart.CartItemServiceInterface;
