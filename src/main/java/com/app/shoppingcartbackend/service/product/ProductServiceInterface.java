@@ -22,6 +22,8 @@ public interface ProductServiceInterface {
 
     Long countProductsByBrandAndName(String brand, String name);
 
+    Long countProductsByBrand(String brand);
+
     ProductDTO convertToProductDTO(Product product);
 
     List<ProductDTO> getConvertedProducts(List<Product> products);

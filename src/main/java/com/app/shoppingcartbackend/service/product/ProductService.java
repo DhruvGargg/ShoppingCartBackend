@@ -118,6 +118,11 @@ public class ProductService implements ProductServiceInterface {
     }
 
     @Override
+    public Long countProductsByBrand(String brand) {
+        return productRepository.countByBrand(brand);
+    }
+
+    @Override
     public ProductDTO convertToProductDTO(Product product) {
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
         List<Image> images = imageRepository.findByProductId(product.getId());
