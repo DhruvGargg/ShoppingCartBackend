@@ -31,5 +31,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
 

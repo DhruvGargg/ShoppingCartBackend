@@ -42,4 +42,8 @@ public class Cart {
         itemToRemove.setCart(null);
         updateTotalAmount();
     }
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

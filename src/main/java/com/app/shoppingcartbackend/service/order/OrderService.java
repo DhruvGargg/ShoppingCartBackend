@@ -1,16 +1,22 @@
 package com.app.shoppingcartbackend.service.order;
 
+import com.app.shoppingcartbackend.enums.OrderStatus;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Cart;
 import com.app.shoppingcartbackend.model.Order;
 import com.app.shoppingcartbackend.model.OrderItem;
 import com.app.shoppingcartbackend.model.Product;
 import com.app.shoppingcartbackend.repository.OrderRepository;
+import com.app.shoppingcartbackend.repository.cart.CartRepository;
 import com.app.shoppingcartbackend.repository.product.ProductRepository;
+import com.app.shoppingcartbackend.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -19,15 +25,23 @@ public class OrderService implements OrderServiceInterface {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final CartService cartService;
 
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, CartService cartService) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.cartService = cartService;
     }
 
+    @Transactional
     @Override
     public Order placeOrder(Long userId) {
-        return null;
+        Cart cart = cartService.getCart(userId);
+        Order order = createOrder(cart);
+        List<OrderItem> orderItemList = createOrderItems(order, cart);
+        order.setOrderItems(new HashSet<>(orderItemList));
+        order.setTotalAmount(calculateTotalAmount(orderItemList));
+        return orderRepository.save(order);
     }
 
     private List<OrderItem> createOrderItems(Order order, Cart cart) {
@@ -42,6 +56,15 @@ public class OrderService implements OrderServiceInterface {
                     cartItem.getUnitPrice()
             );
         }).toList();
+    }
+
+    private Order createOrder(Cart cart) {
+        Order order = new Order();
+        order.setUser(cart.getUser());
+        order.setOrderStatus(OrderStatus.PENDING);
+        order.setOrderDate(LocalDate.now());
+//        return orderRepository.save(order);
+        return order;
     }
 
     private BigDecimal calculateTotalAmount(List<OrderItem> orderItemList) {
