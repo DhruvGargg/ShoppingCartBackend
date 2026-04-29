@@ -7,10 +7,8 @@ import com.app.shoppingcartbackend.model.Order;
 import com.app.shoppingcartbackend.model.OrderItem;
 import com.app.shoppingcartbackend.model.Product;
 import com.app.shoppingcartbackend.repository.OrderRepository;
-import com.app.shoppingcartbackend.repository.cart.CartRepository;
 import com.app.shoppingcartbackend.repository.product.ProductRepository;
 import com.app.shoppingcartbackend.service.cart.CartService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,11 +34,13 @@ public class OrderService implements OrderServiceInterface {
     @Transactional
     @Override
     public Order placeOrder(Long userId) {
-        Cart cart = cartService.getCart(userId);
+        Cart cart = cartService.getCartByUserId(userId);
         Order order = createOrder(cart);
         List<OrderItem> orderItemList = createOrderItems(order, cart);
         order.setOrderItems(new HashSet<>(orderItemList));
         order.setTotalAmount(calculateTotalAmount(orderItemList));
+        Order savedOrder = orderRepository.save(order);
+        cartService.clearCart(cart.getId());
         return orderRepository.save(order);
     }
 
@@ -79,5 +79,10 @@ public class OrderService implements OrderServiceInterface {
     public Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+    }
+
+    @Override
+    public List<Order> getOrders(Long userId) {
+        return orderRepository.findByUserId(userId);
     }
 }

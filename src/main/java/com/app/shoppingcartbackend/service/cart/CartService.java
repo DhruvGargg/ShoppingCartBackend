@@ -49,4 +49,9 @@ public class CartService implements CartServiceInterface {
         cartRepository.save(cart);
         return cart.getId();
     }
+
+    @Override
+    public Cart getCartByUserId(Long userId) {
+        return cartRepository.findByUserId(userId);
+    }
 }
