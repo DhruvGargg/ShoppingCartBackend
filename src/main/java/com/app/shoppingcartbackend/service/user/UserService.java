@@ -1,32 +1,59 @@
 package com.app.shoppingcartbackend.service.user;
 
+import com.app.shoppingcartbackend.exception.AlreadyExistsException.AlreadyExistsException;
+import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.User;
+import com.app.shoppingcartbackend.repository.user.UserRepository.UserRepository;
 import com.app.shoppingcartbackend.request.CreateUserRequest;
 import com.app.shoppingcartbackend.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserServiceInterface {
 
+    private final UserRepository userRepository;
+
     @Override
     public User getUserById(Long userId) {
-        return null;
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public User createUser(CreateUserRequest request) {
-        return null;
+        return Optional.of(request)
+                .filter(user -> !userRepository.existsByEmail(request.getEmail()))
+                .map(req -> {
+                    User user = new User();
+                    user.setEmail(request.getEmail());
+                    user.setFirstName(request.getFirstName());
+                    user.setLastName(request.getLastName());
+                    user.setPassword(request.getPassword());
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new AlreadyExistsException("User not found"));
     }
 
     @Override
     public User updateUser(UserUpdateRequest request, Long userId) {
-        return null;
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                   existingUser.setFirstName(request.getFirstName());
+                   existingUser.setLastName(request.getLastName());
+                   return userRepository.save(existingUser);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public void deleteUser(Long userId) {
-
+        userRepository.findById(userId)
+                .ifPresentOrElse(userRepository ::delete, () -> {
+                    throw new ResourceNotFoundException("User not found");
+                });
     }
 }

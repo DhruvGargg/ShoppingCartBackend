@@ -1,5 +1,8 @@
 package com.app.shoppingcartbackend.request;
 
+import lombok.Data;
+
+@Data
 public class UserUpdateRequest {
 
     private String firstName;
