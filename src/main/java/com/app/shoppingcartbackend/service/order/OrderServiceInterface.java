@@ -1,12 +1,13 @@
 package com.app.shoppingcartbackend.service.order;
 
+import com.app.shoppingcartbackend.dto.OrderDTO;
 import com.app.shoppingcartbackend.model.Order;
 
 import java.util.List;
 
 public interface OrderServiceInterface {
     Order placeOrder(Long userId);
-    Order getOrder(Long orderId);
+    OrderDTO getOrder(Long orderId);
 
-    List<Order> getOrders(Long userId);
+    List<OrderDTO> getUserOrders(Long userId);
 }

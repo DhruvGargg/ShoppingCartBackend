@@ -1,5 +1,6 @@
 package com.app.shoppingcartbackend.service.order;
 
+import com.app.shoppingcartbackend.dto.OrderDTO;
 import com.app.shoppingcartbackend.enums.OrderStatus;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Cart;
@@ -9,6 +10,7 @@ import com.app.shoppingcartbackend.model.Product;
 import com.app.shoppingcartbackend.repository.OrderRepository;
 import com.app.shoppingcartbackend.repository.product.ProductRepository;
 import com.app.shoppingcartbackend.service.cart.CartService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 //@RequiredArgsConstructor
@@ -24,11 +27,13 @@ public class OrderService implements OrderServiceInterface {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, CartService cartService) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, CartService cartService, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.cartService = cartService;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
@@ -76,13 +81,20 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
-    public Order getOrder(Long orderId) {
+    public OrderDTO getOrder(Long orderId) {
         return orderRepository.findById(orderId)
+                .map(this::convertDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     @Override
-    public List<Order> getOrders(Long userId) {
-        return orderRepository.findByUserId(userId);
+    public List<OrderDTO> getUserOrders(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+        return orders.stream().map(this::convertDTO)
+                .collect(Collectors.toList());
+    }
+
+    private OrderDTO convertDTO(Order order) {
+        return modelMapper.map(order, OrderDTO.class);
     }
 }
