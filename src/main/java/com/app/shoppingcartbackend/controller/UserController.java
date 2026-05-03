@@ -39,12 +39,23 @@ public class UserController {
         }
     }
 
+    @PostMapping("/update")
     public ResponseEntity<APIResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, Long userId) {
         try {
             User user = userService.updateUser(userUpdateRequest, userId);
             return ResponseEntity.ok(new APIResponse("User Update Success", user));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new APIResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<APIResponse> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new APIResponse("User Delete Success", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new APIResponse(e.getMessage(), null));
         }
     }
 }
