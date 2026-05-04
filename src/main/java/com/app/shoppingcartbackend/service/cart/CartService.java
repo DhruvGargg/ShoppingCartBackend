@@ -12,12 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class CartService implements CartServiceInterface {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+
+    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository) {
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
+    }
 
     @Override
     public Cart getCart(Long id) {
@@ -47,11 +51,12 @@ public class CartService implements CartServiceInterface {
     public Long initializeNewCart() {
         Cart cart = new Cart();
         cartRepository.save(cart);
-        return cart.getId();
+        return cart.getUser().getUserId();
     }
 
     @Override
     public Cart getCartByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
     }
+
 }

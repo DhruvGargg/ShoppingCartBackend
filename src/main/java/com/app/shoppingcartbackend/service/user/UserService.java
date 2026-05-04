@@ -1,5 +1,6 @@
 package com.app.shoppingcartbackend.service.user;
 
+import com.app.shoppingcartbackend.dto.UserDTO;
 import com.app.shoppingcartbackend.exception.AlreadyExistsException.AlreadyExistsException;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.User;
@@ -7,6 +8,7 @@ import com.app.shoppingcartbackend.repository.user.UserRepository.UserRepository
 import com.app.shoppingcartbackend.request.CreateUserRequest;
 import com.app.shoppingcartbackend.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) {
@@ -55,5 +58,10 @@ public class UserService implements UserServiceInterface {
                 .ifPresentOrElse(userRepository ::delete, () -> {
                     throw new ResourceNotFoundException("User not found");
                 });
+    }
+
+    @Override
+    public UserDTO convertUserToUserDTO(User user) {
+        return modelMapper.map(user, UserDTO.class);
     }
 }

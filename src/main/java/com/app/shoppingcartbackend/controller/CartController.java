@@ -14,9 +14,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 @RequestMapping("${api.prefix}/cart")
 public class CartController {
+
     private final CartServiceInterface cartService;
 
-    @GetMapping("/my-cart/{cartId}")
+    @GetMapping("/{cartId}/my-cart")
     public ResponseEntity<APIResponse> getCart(@PathVariable Long cartId) {
         try {
             Cart cart = cartService.getCart(cartId);
@@ -26,7 +27,7 @@ public class CartController {
         }
     }
 
-    @DeleteMapping("/clear/{cartId}")
+    @DeleteMapping("/{cartId}/clear")
     public ResponseEntity<APIResponse> clearCart(@PathVariable Long cartId) {
         try {
             cartService.clearCart(cartId);

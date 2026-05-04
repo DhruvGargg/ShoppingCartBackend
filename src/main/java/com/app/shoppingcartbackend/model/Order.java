@@ -18,6 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Table(name = "orders")
 public class Order {
 
     @Id

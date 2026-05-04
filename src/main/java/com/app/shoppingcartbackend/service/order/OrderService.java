@@ -45,8 +45,8 @@ public class OrderService implements OrderServiceInterface {
         order.setOrderItems(new HashSet<>(orderItemList));
         order.setTotalAmount(calculateTotalAmount(orderItemList));
         Order savedOrder = orderRepository.save(order);
-        cartService.clearCart(cart.getId());
-        return orderRepository.save(order);
+        cartService.clearCart(cart.getUser().getUserId());
+        return orderRepository.save(savedOrder);
     }
 
     private List<OrderItem> createOrderItems(Order order, Cart cart) {
