@@ -3,13 +3,14 @@ package com.app.shoppingcartbackend.service.cart;
 import com.app.shoppingcartbackend.exception.ResourceNotFound.ResourceNotFoundException;
 import com.app.shoppingcartbackend.model.Cart;
 import com.app.shoppingcartbackend.model.CartItem;
+import com.app.shoppingcartbackend.model.User;
 import com.app.shoppingcartbackend.repository.cartitem.CartItemRepository;
 import com.app.shoppingcartbackend.repository.cart.CartRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,11 +49,15 @@ public class CartService implements CartServiceInterface {
     }
 
     @Override
-    public Long initializeNewCart() {
-        Cart cart = new Cart();
-        cartRepository.save(cart);
-        return cart.getUser().getUserId();
+    public Cart intializeNewCart(User user) {
+        return Optional.ofNullable(getCartByUserId(user.getUserId()))
+                .orElseGet(() -> {
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepository.save(cart);
+                });
     }
+
 
     @Override
     public Cart getCartByUserId(Long userId) {
