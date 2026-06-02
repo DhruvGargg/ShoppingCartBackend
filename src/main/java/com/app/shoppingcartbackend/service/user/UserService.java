@@ -7,11 +7,15 @@ import com.app.shoppingcartbackend.model.User;
 import com.app.shoppingcartbackend.repository.user.UserRepository.UserRepository;
 import com.app.shoppingcartbackend.request.CreateUserRequest;
 import com.app.shoppingcartbackend.request.UserUpdateRequest;
+import com.app.shoppingcartbackend.model.Role;
+import com.app.shoppingcartbackend.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,8 @@ public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     public User getUserById(Long userId) {
@@ -35,10 +41,14 @@ public class UserService implements UserServiceInterface {
                     user.setEmail(request.getEmail());
                     user.setFirstName(request.getFirstName());
                     user.setLastName(request.getLastName());
-                    user.setPassword(request.getPassword());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
+                    Role userRole = roleRepository.findByName("ROLE_USER").orElse(null);
+                    if (userRole != null) {
+                        user.setRoles(Set.of(userRole));
+                    }
                     return userRepository.save(user);
                 })
-                .orElseThrow(() -> new AlreadyExistsException("User not found"));
+                .orElseThrow(() -> new AlreadyExistsException("User with email " + request.getEmail() + " already exists!"));
     }
 
     @Override

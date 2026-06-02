@@ -45,7 +45,7 @@ public class OrderService implements OrderServiceInterface {
         order.setOrderItems(new HashSet<>(orderItemList));
         order.setTotalAmount(calculateTotalAmount(orderItemList));
         Order savedOrder = orderRepository.save(order);
-        cartService.clearCart(cart.getUser().getUserId());
+        cartService.clearCart(cart.getId());
         return orderRepository.save(savedOrder);
     }
 
@@ -83,18 +83,19 @@ public class OrderService implements OrderServiceInterface {
     @Override
     public OrderDTO getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .map(this::convertDTO)
+                .map(this::convertToDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     @Override
     public List<OrderDTO> getUserOrders(Long userId) {
         List<Order> orders = orderRepository.findByUserId(userId);
-        return orders.stream().map(this::convertDTO)
+        return orders.stream().map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    private OrderDTO convertDTO(Order order) {
+    @Override
+    public OrderDTO convertToDto(Order order) {
         return modelMapper.map(order, OrderDTO.class);
     }
 }

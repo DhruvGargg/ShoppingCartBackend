@@ -51,9 +51,7 @@ public class ImageService implements ImageServiceInterface {
                 image.setFileType(file.getContentType());
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
-                String buildDownloadUrl = "/api/v1/images/image/download";
-                String downloadUrl = buildDownloadUrl + image.getId();
-                image.setDownloadUrl(downloadUrl);
+                String buildDownloadUrl = "/api/v1/images/download/";
                 Image savedImage = imageRepository.save(image);
                 savedImage.setDownloadUrl(buildDownloadUrl + savedImage.getId());
                 imageRepository.save(savedImage);

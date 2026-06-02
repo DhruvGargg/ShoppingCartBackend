@@ -84,7 +84,11 @@ public class ProductService implements ProductServiceInterface {
         existingProduct.setPrice(request.getPrice());
         existingProduct.setInventory(request.getInventory());
         existingProduct.setDescription(request.getDescription());
-        Category category = categoryRepository.findByName(request.getCategory().getName());
+        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+                .orElseGet(() -> {
+                    Category newCategory = new Category(request.getCategory().getName());
+                    return categoryRepository.save(newCategory);
+                });
         existingProduct.setCategory(category);
         return existingProduct;
     }
@@ -107,6 +111,11 @@ public class ProductService implements ProductServiceInterface {
     @Override
     public List<Product> getProductsByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand);
+    }
+
+    @Override
+    public List<Product> getProductsByCategoryAndName(String category, String name) {
+        return productRepository.findByCategoryNameAndName(category, name);
     }
 
     @Override

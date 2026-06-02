@@ -23,7 +23,7 @@ public class Cart {
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CartItem> cartItems;
+    private Set<CartItem> cartItems = new java.util.HashSet<>();
 
     public void addItem(CartItem cartItem) {
         cartItems.add(cartItem);

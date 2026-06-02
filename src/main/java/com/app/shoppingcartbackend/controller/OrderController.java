@@ -14,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("{api.prefix}/orders")
+@RequestMapping("${api.prefix}/orders")
 public class OrderController {
 
     private final OrderServiceInterface orderService;
@@ -23,7 +23,8 @@ public class OrderController {
     public ResponseEntity<APIResponse> createOrder(@RequestParam Long userId) {
         try {
             Order order = orderService.placeOrder(userId);
-            return ResponseEntity.ok(new APIResponse("Order created", order));
+            OrderDTO orderDTO = orderService.convertToDto(order);
+            return ResponseEntity.ok(new APIResponse("Order created", orderDTO));
         } catch (Exception e) {
 //            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new APIResponse("Error Occurred!", e.getMessage()));

@@ -5,6 +5,8 @@ import com.app.shoppingcartbackend.model.Cart;
 import com.app.shoppingcartbackend.response.APIResponse;
 import com.app.shoppingcartbackend.service.cart.CartServiceInterface;
 import lombok.RequiredArgsConstructor;
+import com.app.shoppingcartbackend.dto.CartDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +18,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class CartController {
 
     private final CartServiceInterface cartService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/{cartId}/my-cart")
     public ResponseEntity<APIResponse> getCart(@PathVariable Long cartId) {
         try {
             Cart cart = cartService.getCart(cartId);
-            return ResponseEntity.ok(new APIResponse("Success", cart));
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+            return ResponseEntity.ok(new APIResponse("Success", cartDTO));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new APIResponse(e.getMessage(), null));
         }

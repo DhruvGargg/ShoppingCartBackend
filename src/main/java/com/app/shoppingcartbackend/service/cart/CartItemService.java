@@ -55,11 +55,11 @@ public class CartItemService implements CartItemServiceInterface {
     }
 
     @Override
-    public void updateItemQuantity(Long cartId, Long productId, Integer quantity) {
+    public void updateItemQuantity(Long cartId, Long itemId, Integer quantity) {
         Cart cart = cartService.getCart(cartId);
         cart.getCartItems()
                 .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
+                .filter(item -> item.getId().equals(itemId))
                 .findFirst()
                 .ifPresent(item -> {
                     item.setQuantity(quantity);

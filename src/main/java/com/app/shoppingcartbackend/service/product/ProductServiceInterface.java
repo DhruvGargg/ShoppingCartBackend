@@ -17,6 +17,7 @@ public interface ProductServiceInterface {
     List<Product> getProductsByCategory(String category);
     List<Product> getProductsByBrand(String brand);
     List<Product> getProductsByCategoryAndBrand(String category, String brand);
+    List<Product> getProductsByCategoryAndName(String category, String name);
     List<Product> getProductsByName(String name);
     List<Product> getProductsByBrandAndName(String brand, String name);
 

@@ -1,11 +1,13 @@
 package com.app.shoppingcartbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -20,8 +22,9 @@ public class Category {
     private Long id;
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public Category(String name) {
         this.name = name;
